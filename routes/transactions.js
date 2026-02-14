@@ -36,17 +36,23 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-// Delete a transaction
-router.delete('/:id', auth, async (req, res) => {
+// Update a transaction
+router.put('/:id', auth, async (req, res) => {
   try {
-    const transaction = await Transaction.findOne({ _id: req.params.id, user: req.user });
-    if (!transaction) return res.status(404).json({ message: 'Transaction not found' });
+    const { description, amount, type } = req.body;
+    const transaction = await Transaction.findOneAndUpdate(
+      { _id: req.params.id, user: req.user },
+      { description, amount, type },
+      { returnDocument: 'after', runValidators: true }
+    );
     
-    await transaction.deleteOne();
-    res.json({ message: 'Transaction removed' });
+    if (!transaction) return res.status(404).json({ message: 'Transaction not found' });
+    res.json(transaction);
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
+
+// Delete a transaction
 
 module.exports = router;

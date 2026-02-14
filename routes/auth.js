@@ -83,7 +83,7 @@ router.put('/preferences', auth, async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.user,
       updateData,
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!user) {
