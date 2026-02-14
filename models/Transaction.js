@@ -15,6 +15,14 @@ const transactionSchema = new mongoose.Schema({
     enum: ['spent', 'got'],
     required: true
   },
+  currency: {
+    type: String,
+    default: 'USD'
+  },
+  currencySymbol: {
+    type: String,
+    default: '$'
+  },
   list: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'List',

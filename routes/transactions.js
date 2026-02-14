@@ -19,11 +19,13 @@ router.get('/:listId', auth, async (req, res) => {
 // Add a transaction
 router.post('/', auth, async (req, res) => {
   try {
-    const { description, amount, type, listId } = req.body;
+    const { description, amount, type, listId, currency, currencySymbol } = req.body;
     const newTransaction = new Transaction({
       description,
       amount,
       type,
+      currency: currency || 'USD',
+      currencySymbol: currencySymbol || '$',
       list: listId,
       user: req.user
     });

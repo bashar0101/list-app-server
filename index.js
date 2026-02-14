@@ -21,6 +21,12 @@ app.get('/', (req, res) => {
   res.send('Expense Manager API is running...');
 });
 
+// Error handler middleware
+app.use((err, req, res, next) => {
+  console.error('Unhandled Error:', err);
+  res.status(500).json({ message: 'Server error', error: err.message });
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
