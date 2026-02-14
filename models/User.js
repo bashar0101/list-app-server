@@ -23,6 +23,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  preferredCurrency: {
+    type: String,
+    default: 'USD'
+  },
+  preferredCurrencySymbol: {
+    type: String,
+    default: '$'
+  },
+  preferredLanguage: {
+    type: String,
+    default: 'en-US'
+  },
   createdAt: {
     type: Date,
     default: Date.now

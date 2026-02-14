@@ -19,11 +19,13 @@ router.get('/:listId', auth, async (req, res) => {
 // Add a transaction
 router.post('/', auth, async (req, res) => {
   try {
-    const { description, amount, type, listId } = req.body;
+    const { description, amount, type, listId, currency, currencySymbol } = req.body;
     const newTransaction = new Transaction({
       description,
       amount,
       type,
+      currency: currency || 'USD',
+      currencySymbol: currencySymbol || '$',
       list: listId,
       user: req.user
     });
@@ -31,6 +33,23 @@ router.post('/', auth, async (req, res) => {
     res.status(201).json(transaction);
   } catch (err) {
     res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update a transaction
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const { description, amount, type } = req.body;
+    const transaction = await Transaction.findOneAndUpdate(
+      { _id: req.params.id, user: req.user },
+      { description, amount, type },
+      { returnDocument: 'after', runValidators: true }
+    );
+    
+    if (!transaction) return res.status(404).json({ message: 'Transaction not found' });
+    res.json(transaction);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
@@ -43,7 +62,7 @@ router.delete('/:id', auth, async (req, res) => {
     await transaction.deleteOne();
     res.json({ message: 'Transaction removed' });
   } catch (err) {
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
 
