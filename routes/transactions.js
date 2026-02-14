@@ -3,6 +3,18 @@ const router = express.Router();
 const Transaction = require('../models/Transaction');
 const auth = require('../middleware/auth');
 
+// Get all transactions for the user (Global Summary)
+router.get('/', auth, async (req, res) => {
+  try {
+    const transactions = await Transaction.find({ user: req.user })
+      .sort({ createdAt: -1 })
+      .populate('list', 'name'); // Populate list name for display
+    res.json(transactions);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Get transactions for a specific list
 router.get('/:listId', auth, async (req, res) => {
   try {
